@@ -268,9 +268,10 @@ body{
 .seccion .p{}
 /*SECCION GRID LO USO PARA LOS TRABAJOS*/
 .seccion .grid{
-    width: 90%;
+    width: 100%;
     max-width: 40em;
-    margin: 1em 0;
+    margin: 1em 3em 1em;
+
     
     display:grid;
     grid-template-columns: repeat( auto-fit, minmax(10rem , 1fr));
@@ -286,6 +287,8 @@ body{
     justify-content: center;
     align-items: center;
 
+    
+
     position: relative;
     overflow: hidden;
     
@@ -293,12 +296,11 @@ body{
 .seccion .a{}
 .seccion .figure{
     width: 100%;
-    background: red;
+    
 
 }
 .seccion .img{
     width: 100%;
-    
    
 }
 .seccion .h4{
