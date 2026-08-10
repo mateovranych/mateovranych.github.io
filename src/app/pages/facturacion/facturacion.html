@@ -1,0 +1,360 @@
+<app-demo-header title="Sistema de Gestión"></app-demo-header>
+
+<div class="app-shell">
+
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <span class="brand-icon">📊</span>
+      <span class="brand-text">GestiónPro</span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <button class="nav-item" [class.active]="vistaActiva === 'facturas'" (click)="cambiarVista('facturas')">
+        <span class="nav-icon">🧾</span>
+        <span class="nav-label">Facturas ARCA</span>
+        <span class="nav-badge nav-badge-red" *ngIf="(facturas | countPendientes) > 0">
+          {{ facturas | countPendientes }}
+        </span>
+      </button>
+      <button class="nav-item" [class.active]="vistaActiva === 'productos'" (click)="cambiarVista('productos')">
+        <span class="nav-icon">📦</span>
+        <span class="nav-label">Productos</span>
+        <span class="nav-badge" *ngIf="productos.length > 0">{{ productos.length }}</span>
+      </button>
+      <button class="nav-item" [class.active]="vistaActiva === 'precios'" (click)="cambiarVista('precios')">
+        <span class="nav-icon">💲</span>
+        <span class="nav-label">Listas de Precios</span>
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <span class="sf-user">👤 Admin</span>
+    </div>
+  </aside>
+
+  <main class="main-area">
+
+    <div class="view-pane" *ngIf="vistaActiva === 'facturas'">
+
+      <div class="page-header">
+        <div class="page-title-block">
+          <h2>Facturas ARCA</h2>
+          <p>Emisión electrónica de comprobantes</p>
+        </div>
+        <button class="btn-primary" (click)="abrirDialogNuevo()">+ Nueva factura</button>
+      </div>
+
+      <div class="fc-toolbar">
+        <div class="search-wrap">
+          <span class="search-ico">🔍</span>
+          <input class="search-input" [(ngModel)]="filtro" (ngModelChange)="aplicarFiltro()"
+            placeholder="Buscar por cliente, tipo, número, CAE..."/>
+        </div>
+        <div class="stat-pills">
+          <div class="stat-pill green"><span>{{ facturas | countAutorizadas }}</span> autorizadas</div>
+          <div class="stat-pill amber"><span>{{ facturas | countPendientes }}</span> pendientes</div>
+          <div class="stat-pill blue">Total: ${{ facturas | sumTotal | number:'1.0-0' }}</div>
+        </div>
+      </div>
+
+      <div class="loading-row" *ngIf="cargando">
+        <div class="spinner"></div>
+        <span>{{ reintentandoId ? 'Consultando ARCA...' : 'Cargando facturas...' }}</span>
+      </div>
+
+      <div class="empty-state" *ngIf="!cargando && facturas.length === 0">
+        <div class="empty-ico">🧾</div>
+        <p>No hay facturas</p>
+        <button class="btn-primary" (click)="abrirDialogNuevo()">Emitir primera factura</button>
+      </div>
+
+      <div class="table-wrap" *ngIf="!cargando || facturas.length > 0">
+        <table class="data-table">
+          <thead><tr>
+            <th>ID</th><th>Cliente</th><th>Tipo</th><th>Número</th>
+            <th>Fecha</th><th class="th-r">Total</th><th>CAE</th>
+            <th>Estado</th><th>Acciones</th>
+          </tr></thead>
+          <tbody>
+            <tr *ngFor="let f of facturasFiltradas" [class.row-pending]="!f.autorizadaEnARCA">
+              <td class="td-id">#{{ f.id }}</td>
+              <td class="td-cliente">{{ f.clienteNombre }}</td>
+              <td><span class="chip-tipo" [ngClass]="'tipo-' + f.codigoAfipComprobante">{{ f.tipoComprobanteNombre }}</span></td>
+              <td class="td-mono">{{ f.puntoVenta | number:'4.0-0' }}-{{ f.numeroComprobante | number:'8.0-0' }}</td>
+              <td>{{ f.fechaEmision | date:'dd/MM/yyyy' }}</td>
+              <td class="td-total td-r">${{ f.total | number:'1.2-2' }}</td>
+              <td class="td-mono td-cae">
+                <span *ngIf="f.cae" class="cae-val">{{ f.cae }}</span>
+                <span *ngIf="!f.cae" class="sin-cae">—</span>
+              </td>
+              <td>
+                <span *ngIf="f.autorizadaEnARCA"  class="badge-estado green">✓ Autorizada</span>
+                <span *ngIf="!f.autorizadaEnARCA" class="badge-estado amber" [title]="f.arcaMensajeError || ''">⚠ Pendiente</span>
+              </td>
+              <td class="td-acciones">
+                <button class="act-btn danger"  (click)="eliminarFactura(f)"           title="Eliminar">🗑</button>
+                <button class="act-btn"                                                title="Ver (demo)">👁</button>
+                <button class="act-btn"                                                title="PDF (demo)">📄</button>
+                <button class="act-btn accent" *ngIf="!f.autorizadaEnARCA"
+                  (click)="reintentarAutorizacion(f)" [class.spin]="reintentandoId===f.id"
+                  title="Reintentar ARCA">🔄</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="view-pane" *ngIf="vistaActiva === 'productos'">
+
+      <div class="page-header">
+        <div class="page-title-block">
+          <h2>Productos y Servicios</h2>
+          <p>Administrá el catálogo de ítems</p>
+        </div>
+        <button class="btn-primary" (click)="abrirModalCrearProd()">+ Nuevo ítem</button>
+      </div>
+
+      <div class="toolbar-simple">
+        <div class="search-wrap">
+          <span class="search-ico">🔍</span>
+          <input class="search-input" [(ngModel)]="filtroProd" (ngModelChange)="aplicarFiltroProd()"
+            placeholder="Código, descripción o categoría..."/>
+        </div>
+        <span class="result-label">{{ productosFiltrados.length }} ítems</span>
+      </div>
+
+      <div class="empty-state" *ngIf="productosFiltrados.length === 0">
+        <div class="empty-ico">📦</div>
+        <p>No hay ítems cargados</p>
+        <button class="btn-primary" (click)="abrirModalCrearProd()">Crear primer ítem</button>
+      </div>
+
+      <div class="table-wrap" *ngIf="productosFiltrados.length > 0">
+        <table class="data-table">
+          <thead><tr>
+            <th>Código</th><th>Descripción</th><th>Tipo</th><th>Categoría</th>
+            <th>Unidad</th><th>Proveedor</th><th>Frío</th><th>Estado</th><th>Acciones</th>
+          </tr></thead>
+          <tbody>
+            <tr *ngFor="let p of productosFiltrados">
+              <td class="td-mono">{{ p.codigo }}</td>
+              <td class="td-desc">{{ p.descripcion }}</td>
+              <td>
+                <span class="chip-tipo" [ngClass]="p.esServicio ? 'tipo-srv' : 'tipo-prod'">
+                  {{ p.esServicio ? 'Servicio' : 'Producto' }}
+                </span>
+              </td>
+              <td>{{ p.categoriaNombre }}</td>
+              <td class="td-sec">{{ p.unidadMedidaNombre }} <span *ngIf="p.factorConversion > 1">(x{{ p.factorConversion }})</span></td>
+              <td class="td-sec td-prov">{{ p.proveedorNombre }}</td>
+              <td>
+                <span class="chip-frio" [class.frio-si]="p.requiereFrio" [class.frio-no]="!p.requiereFrio">
+                  {{ p.requiereFrio ? '❄ Sí' : 'No' }}
+                </span>
+              </td>
+              <td>
+                <button class="estado-toggle" [class.habilitado]="p.habilitado" [class.deshabilitado]="!p.habilitado"
+                  (click)="toggleHabilitado(p)" [title]="p.habilitado ? 'Click para deshabilitar' : 'Click para habilitar'">
+                  {{ p.habilitado ? 'Habilitado' : 'Deshabilitado' }}
+                </button>
+              </td>
+              <td class="td-acciones">
+                <div *ngIf="confirmEliminarProdId !== p.id" class="inline-acts">
+                  <button class="act-btn"        (click)="abrirModalEditarProd(p)"  title="Editar">✏️</button>
+                  <button class="act-btn danger"  (click)="confirmarEliminarProd(p.id)" title="Eliminar">🗑</button>
+                </div>
+                <div *ngIf="confirmEliminarProdId === p.id" class="confirm-del">
+                  <span>¿Eliminar?</span>
+                  <button class="confirm-yes" (click)="eliminarProducto(p.id)">Sí</button>
+                  <button class="confirm-no"  (click)="cancelarEliminarProd()">No</button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="view-pane" *ngIf="vistaActiva === 'precios'">
+
+      <div class="page-header">
+        <div class="page-title-block">
+          <h2>Listas de Precios</h2>
+          <p>Costo y porcentajes por lista — editá y Enter para confirmar</p>
+        </div>
+      </div>
+
+      <div class="precio-toolbar">
+        <div class="precio-filters">
+          <div class="search-wrap">
+            <span class="search-ico">🔍</span>
+            <input class="search-input" [(ngModel)]="filtroPrecio" (ngModelChange)="aplicarFiltrosPrecios()"
+              placeholder="Buscar por código o descripción..."/>
+          </div>
+          <input class="input-num" type="number" placeholder="Costo mín" [(ngModel)]="filtroMinCosto"
+            (change)="aplicarFiltrosPrecios()"/>
+          <input class="input-num" type="number" placeholder="Costo máx" [(ngModel)]="filtroMaxCosto"
+            (change)="aplicarFiltrosPrecios()"/>
+        </div>
+        <div class="precio-pager-top">
+          <span class="pager-info">{{ itemsPreciosFiltrados.length }} ítems</span>
+        </div>
+      </div>
+
+      <div class="table-wrap table-precios">
+        <table class="data-table precios-table">
+          <thead>
+            <tr>
+              <th class="sortable" (click)="ordenarPrecios('codigo')">
+                CÓDIGO <span class="sort-arrow">{{ ordenColumna==='codigo' ? (ordenAsc?'↑':'↓') : '↕' }}</span>
+              </th>
+              <th class="sortable" (click)="ordenarPrecios('descripcion')">
+                DESCRIPCIÓN <span class="sort-arrow">{{ ordenColumna==='descripcion' ? (ordenAsc?'↑':'↓') : '↕' }}</span>
+              </th>
+              <th class="sortable th-costo" (click)="ordenarPrecios('precioVenta')">
+                COSTO <span class="sort-arrow">{{ ordenColumna==='precioVenta' ? (ordenAsc?'↑':'↓') : '↕' }}</span>
+              </th>
+              <ng-container *ngFor="let l of listas">
+                <th class="th-pct">% {{ l.nombre }}</th>
+                <th class="th-precio-val">{{ l.nombre }}</th>
+              </ng-container>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of itemsPreciosPagina" [class.row-highlight]="item._highlight">
+              <td class="td-mono">{{ item.codigo }}</td>
+              <td class="td-desc">{{ item.descripcion }}</td>
+              <td class="td-costo">
+                <input type="number" class="input-precio input-costo"
+                  [(ngModel)]="item.precioVenta"
+                  (keydown)="onKeyDownNumero($event)"
+                  (focus)="onFocusNumero(item, 'precioVenta')"
+                  (keydown.escape)="onEscapeNumero(item, 'precioVenta')"
+                  (keydown.enter)="onCostoChange(item)"
+                  (blur)="onCostoChange(item)"/>
+              </td>
+              <ng-container *ngFor="let lista of item.listasDetalle; let li = index">
+                <td class="td-pct">
+                  <input type="number" class="input-precio input-pct"
+                    [(ngModel)]="lista.porcentaje"
+                    (keydown)="onKeyDownNumero($event)"
+                    (focus)="onFocusNumero(lista, 'porcentaje')"
+                    (keydown.escape)="onEscapeNumero(lista, 'porcentaje')"
+                    (keydown.enter)="onPorcentajeChange(item, lista)"
+                    (blur)="onPorcentajeChange(item, lista)"/>
+                </td>
+                <td class="td-precio-val">{{ formatPrecio(lista.precio) }}</td>
+              </ng-container>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="paginacion">
+        <button class="pager-btn" (click)="paginaAnterior()" [disabled]="pageIndex === 0">← Anterior</button>
+        <span class="pager-label">Página {{ pageIndex + 1 }} de {{ totalPaginas }}</span>
+        <button class="pager-btn" (click)="paginaSiguiente()" [disabled]="pageIndex + 1 >= totalPaginas">Siguiente →</button>
+        <span class="page-size-wrap">
+          Mostrar
+          <select [(ngModel)]="pageSize" (change)="cambiarPageSize()">
+            <option [ngValue]="5">5</option>
+            <option [ngValue]="10">10</option>
+            <option [ngValue]="25">25</option>
+            <option [ngValue]="50">50</option>
+          </select>
+          por página
+        </span>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<app-facturacion-dialog
+  *ngIf="mostrarDialog"
+  (emitida)="onFacturaEmitida($event)"
+  (cancelado)="onDialogCancelado()">
+</app-facturacion-dialog>
+
+<div class="modal-overlay" *ngIf="modalProdAbierto" (click)="cerrarModalProd()">
+  <div class="modal-card" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>{{ modoModal === 'crear' ? 'Nuevo ítem' : 'Editar ítem' }}</h3>
+      <button class="modal-close" (click)="cerrarModalProd()">✕</button>
+    </div>
+    <div class="modal-body">
+
+      <div class="form-row two-col">
+        <div class="form-group">
+          <label>Código *</label>
+          <input type="text" [(ngModel)]="prodForm.codigo" placeholder="Ej: LAC-003">
+        </div>
+        <div class="form-group">
+          <label>Categoría</label>
+          <select [(ngModel)]="prodForm.categoriaId">
+            <option [ngValue]="null">Sin categoría</option>
+            <option *ngFor="let c of categorias" [ngValue]="c.id">{{ c.nombre }}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Descripción *</label>
+        <input type="text" [(ngModel)]="prodForm.descripcion" placeholder="Descripción del ítem">
+      </div>
+
+      <div class="form-row two-col">
+        <div class="form-group">
+          <label>Presentación (unidad)</label>
+          <select [(ngModel)]="prodForm.unidadMedidaId">
+            <option *ngFor="let u of unidades" [ngValue]="u.id">{{ u.nombre }}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Unidad de cálculo</label>
+          <select [(ngModel)]="prodForm.unidadBaseId">
+            <option *ngFor="let u of unidades" [ngValue]="u.id">{{ u.nombre }}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row two-col">
+        <div class="form-group">
+          <label>Estimativo presentación</label>
+          <input type="number" [(ngModel)]="prodForm.factorConversion" min="0.001" step="0.001"
+            placeholder="Ej: 12 = caja x12">
+        </div>
+        <div class="form-group">
+          <label>Proveedor</label>
+          <select [(ngModel)]="prodForm.proveedorId">
+            <option *ngFor="let p of proveedores" [ngValue]="p.id">{{ p.razonSocial }}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-checks">
+        <label class="check-label">
+          <input type="checkbox" [(ngModel)]="prodForm.esServicio"> Es servicio
+        </label>
+        <label class="check-label">
+          <input type="checkbox" [(ngModel)]="prodForm.requiereFrio"> Requiere frío
+        </label>
+        <label class="check-label">
+          <input type="checkbox" [(ngModel)]="prodForm.habilitado"> Habilitado
+        </label>
+      </div>
+
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" (click)="cerrarModalProd()">Cancelar</button>
+      <button class="btn-primary" (click)="guardarProducto()" [disabled]="guardandoProd">
+        {{ guardandoProd ? 'Guardando...' : (modoModal === 'crear' ? 'Crear ítem' : 'Guardar cambios') }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="fc-toast" [class.show]="toastVisible" [ngClass]="'toast-' + toastTipo">
+  {{ toastMsg }}
+</div>

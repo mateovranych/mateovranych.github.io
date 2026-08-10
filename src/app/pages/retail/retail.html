@@ -1,0 +1,297 @@
+<app-demo-header title="POS Retail"></app-demo-header>
+
+<div class="pos-layout">
+
+  <div class="stock-panel">
+
+    <div class="stock-header">
+      <div class="stock-title">
+        <span class="stock-icon">📦</span>
+        <span>Productos</span>
+        <span class="stock-count">{{ productosFiltrados.length }}</span>
+      </div>
+      <input
+        class="search-input"
+        [formControl]="searchControl"
+        placeholder="Buscar por nombre o código..."
+        #searchInputRef
+      />
+    </div>
+
+    <div class="categorias-bar">
+      <button
+        *ngFor="let cat of categorias"
+        class="cat-btn"
+        [class.active]="categoriaActiva === cat"
+        (click)="filtrarCategoria(cat)">
+        {{ cat }}
+      </button>
+    </div>
+
+    <div class="tabla-wrapper" #tablaRef>
+      <table class="tabla-productos">
+        <thead>
+          <tr>
+            <th>Código</th>
+            <th>Nombre</th>
+            <th>Precio</th>
+            <th>Stock</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            *ngFor="let p of productosMostrados"
+            (click)="seleccionarProducto(p)"
+            [class.selected]="productoSeleccionado?.id === p.id"
+            [class.sin-stock]="p.stock === 0">
+            <td class="td-codigo">{{ p.codigo }}</td>
+            <td class="td-nombre">{{ p.nombre }}</td>
+            <td class="td-precio">${{ p.precioVenta | number:'1.2-2' }}</td>
+            <td class="td-stock">
+              <span class="stock-badge"
+                [class.bajo]="p.stock > 0 && p.stock < 5"
+                [class.cero]="p.stock === 0">
+                {{ p.stock }}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="detalle-producto" *ngIf="productoSeleccionado">
+      <div class="detalle-nombre">{{ productoSeleccionado.nombre }}</div>
+      <div class="detalle-grid">
+        <div class="detalle-item">
+          <span class="detalle-label">Código</span>
+          <strong>{{ productoSeleccionado.codigo }}</strong>
+        </div>
+        <div class="detalle-item">
+          <span class="detalle-label">Precio</span>
+          <strong class="detalle-precio">${{ productoSeleccionado.precioVenta | number:'1.2-2' }}</strong>
+        </div>
+        <div class="detalle-item">
+          <span class="detalle-label">Stock</span>
+          <strong>{{ productoSeleccionado.stock }} u.</strong>
+        </div>
+        <div class="detalle-item">
+          <span class="detalle-label">Categoría</span>
+          <strong>{{ productoSeleccionado.categoria }}</strong>
+        </div>
+      </div>
+      <button class="btn-agregar-detalle" (click)="agregarProducto(productoSeleccionado)">
+        + Agregar al carrito
+      </button>
+    </div>
+
+  </div>
+
+  <div class="carrito-panel">
+
+    <div class="carrito-header">
+      <div class="carrito-title">
+        🛒 Carrito
+        <span class="carrito-count" *ngIf="carrito.length > 0">{{ carrito.length }}</span>
+      </div>
+      <div class="caja-status" [class.abierta]="cajaAbierta">
+        <span class="caja-dot"></span>
+        Caja {{ cajaAbierta ? 'abierta' : 'cerrada' }}
+      </div>
+    </div>
+
+    <div class="caja-actions">
+      <button class="btn-caja" [class.cerrar]="cajaAbierta" (click)="toggleCaja()">
+        {{ cajaAbierta ? '🔒 Cerrar caja' : '🔓 Abrir caja' }}
+      </button>
+      <button class="btn-retiro" [disabled]="!cajaAbierta" (click)="abrirRetiro()">
+        💸 Retiro
+      </button>
+      <div class="shortcuts-hint">
+        <span>F2 Pagar</span>
+        <span>F4 Limpiar</span>
+        <span>F7 Retiro</span>
+      </div>
+    </div>
+
+    <div class="carrito-lista">
+      <div *ngIf="carrito.length === 0" class="carrito-vacio">
+        <div class="vacio-icon">🛒</div>
+        <p>Carrito vacío</p>
+        <p class="vacio-hint">Hacé clic en un producto para agregar</p>
+      </div>
+
+      <div class="carrito-item" *ngFor="let item of carrito; let i = index"
+           [style.animation-delay]="i * 40 + 'ms'">
+        <div class="item-info">
+          <div class="item-nombre">{{ item.producto.nombre }}</div>
+          <div class="item-codigo">{{ item.producto.codigo }}</div>
+        </div>
+        <div class="item-controles">
+          <button class="qty-btn" (click)="disminuir(item)">−</button>
+          <span class="qty-num">{{ item.cantidad }}</span>
+          <button class="qty-btn" (click)="aumentar(item)">+</button>
+        </div>
+        <div class="item-subtotal">
+          ${{ (item.producto.precioVenta * item.cantidad) | number:'1.2-2' }}
+        </div>
+        <button class="item-remove" (click)="eliminar(item)">✕</button>
+      </div>
+    </div>
+
+    <div class="carrito-footer">
+      <div class="total-row">
+        <span class="total-label">Total</span>
+        <span class="total-num">${{ total | number:'1.2-2' }}</span>
+      </div>
+      <div class="footer-btns">
+        <button class="btn-limpiar" (click)="limpiar()" [disabled]="carrito.length === 0">
+          Limpiar
+        </button>
+        <button class="btn-pagar" (click)="abrirPago()"
+          [disabled]="carrito.length === 0 || !cajaAbierta">
+          Pagar →
+        </button>
+      </div>
+      <p class="caja-warning" *ngIf="!cajaAbierta && carrito.length > 0">
+        Abrí la caja para poder cobrar
+      </p>
+    </div>
+
+  </div>
+</div>
+
+<div *ngIf="modal === 'caja-abrir'" class="overlay" (click)="cerrarModal()">
+  <div class="modal-card" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Apertura de caja</h3>
+      <button class="close-btn" (click)="cerrarModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Monto inicial ($)</label>
+        <input type="number" [(ngModel)]="montoCaja" min="0" placeholder="0.00" class="form-input" />
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" (click)="cerrarModal()">Cancelar</button>
+      <button class="btn-primary" (click)="confirmarAbrirCaja()">Abrir caja</button>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="modal === 'retiro'" class="overlay" (click)="cerrarModal()">
+  <div class="modal-card" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Retiro de dinero</h3>
+      <button class="close-btn" (click)="cerrarModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Monto ($)</label>
+        <input type="number" [(ngModel)]="retiroMonto" min="0" placeholder="0.00" class="form-input" />
+      </div>
+      <div class="form-group">
+        <label>Motivo</label>
+        <input type="text" [(ngModel)]="retiroMotivo" placeholder="Ej: Gastos operativos" class="form-input" />
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" (click)="cerrarModal()">Cancelar</button>
+      <button class="btn-primary" (click)="confirmarRetiro()" [disabled]="!retiroMonto || retiroMonto <= 0">
+        Registrar retiro
+      </button>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="modal === 'pago'" class="overlay" (click)="cerrarModal()">
+  <div class="modal-card modal-pago" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Cobrar venta</h3>
+      <button class="close-btn" (click)="cerrarModal()">✕</button>
+    </div>
+    <div class="modal-body">
+
+      <div class="pago-total-display">
+        <span class="pago-total-label">Total a cobrar</span>
+        <span class="pago-total-num">${{ total | number:'1.2-2' }}</span>
+      </div>
+
+      <div class="metodos-grid">
+        <button
+          *ngFor="let m of metodosPago"
+          class="metodo-btn"
+          [class.active]="metodoPagoSeleccionado === m.id"
+          (click)="metodoPagoSeleccionado = m.id">
+          <span class="metodo-icon">{{ m.icono }}</span>
+          <span class="metodo-nombre">{{ m.nombre }}</span>
+        </button>
+      </div>
+
+      <div class="form-group" *ngIf="metodoPagoSeleccionado === 1">
+        <label>Efectivo recibido ($)</label>
+        <input
+          type="number"
+          [(ngModel)]="efectivoRecibido"
+          [min]="total"
+          class="form-input form-input-lg"
+          (input)="calcularVuelto()" />
+        <div class="vuelto-row" *ngIf="efectivoRecibido >= total">
+          <span class="vuelto-label">Vuelto</span>
+          <span class="vuelto-num">${{ vuelto | number:'1.2-2' }}</span>
+        </div>
+      </div>
+
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" (click)="cerrarModal()">Cancelar</button>
+      <button class="btn-pagar-modal" (click)="confirmarVenta()"
+        [disabled]="!metodoPagoSeleccionado || (metodoPagoSeleccionado === 1 && efectivoRecibido < total)">
+        Confirmar venta
+      </button>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="modal === 'ticket'" class="overlay" (click)="cerrarModal()">
+  <div class="modal-card modal-ticket" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Ticket de venta</h3>
+      <button class="close-btn" (click)="cerrarModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="ticket">
+        <div class="ticket-header">
+          <div class="ticket-brand">RetailPro</div>
+          <div class="ticket-fecha">{{ ticketFecha }}</div>
+          <div class="ticket-num">Venta #{{ ventaNum }}</div>
+        </div>
+        <div class="ticket-linea"></div>
+        <div class="ticket-items">
+          <div class="ticket-item" *ngFor="let item of ticketItems">
+            <span class="ti-nombre">{{ item.producto.nombre }}</span>
+            <span class="ti-qty">x{{ item.cantidad }}</span>
+            <span class="ti-sub">${{ (item.producto.precioVenta * item.cantidad) | number:'1.2-2' }}</span>
+          </div>
+        </div>
+        <div class="ticket-linea"></div>
+        <div class="ticket-total">
+          <span>TOTAL</span>
+          <span>${{ ticketTotal | number:'1.2-2' }}</span>
+        </div>
+        <div class="ticket-pago">
+          {{ ticketMetodo }}
+          <span *ngIf="ticketVuelto > 0"> · Vuelto ${{ ticketVuelto | number:'1.2-2' }}</span>
+        </div>
+        <div class="ticket-gracias">Gracias por su compra!</div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-primary" (click)="cerrarModal()">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" [class.show]="toastVisible">
+  {{ toastMsg }}
+</div>

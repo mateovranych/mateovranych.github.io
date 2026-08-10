@@ -1,0 +1,178 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+
+:root {
+  --bg: #008080; 
+  --surface: #c0c0c0; 
+  --border-light: #ffffff;
+  --border-dark: #808080;
+  --border-black: #000000;
+
+  --text-primary: #000000;
+  --text-secondary: #131212;
+  --text-on-accent: #ffffff;
+
+  --accent: #000080; 
+  
+  --glow-1: transparent;
+  --glow-2: transparent;
+}
+
+.dark {  
+
+  --bg: #000000;
+  --surface: #1c1c1e;
+  --border: #38383a;
+
+  --text-primary: #ffffff;
+  --text-secondary: #8e8e93;
+  --text-on-accent: #ffffff;
+
+  --accent: #0a84ff; 
+
+  --glow-1: rgba(10, 132, 255, 0.15);
+  --glow-2: rgba(94, 92, 230, 0.15);
+}
+
+
+html {
+  scroll-behavior: smooth;
+   font-size: 17px; 
+}
+
+body {
+  background: var(--bg);
+  color: var(--text-primary);
+  font-family: 'Tahoma', 'MS Sans Serif', sans-serif;
+  @apply transition-colors duration-300;
+}
+
+.dark body {
+  background:
+    radial-gradient(circle at 20% 30%, var(--glow-1), transparent 40%),
+    radial-gradient(circle at 80% 70%, var(--glow-2), transparent 40%),
+    var(--bg);
+  font-family: 'SF Pro Display', 'Inter', system-ui;
+}
+
+.card {
+  @apply border-2;
+  background-color: var(--surface);
+  border-color: var(--border-light) var(--border-dark) var(--border-dark) var(--border-light);
+}
+
+.dark .card {
+  @apply rounded-[2rem] border border-border;
+  background-color: rgba(28, 28, 30, 0.8);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+  border-color: var(--border);
+}
+
+.input, .form-input {
+  @apply w-full px-3 py-2 outline-none transition-all border-2;
+  background-color: #ffffff;
+  color: #000000;
+
+  border-color: var(--border-dark) var(--border-light) var(--border-light) var(--border-dark);
+}
+
+.dark .input, .dark .form-input {
+  @apply rounded-xl border-none px-4 py-2;
+  background-color: rgba(44, 44, 46, 0.6);
+  color: #ffffff;
+  backdrop-filter: blur(10px);
+}
+
+.btn {
+  @apply text-sm px-4 py-1 font-bold border-2 transition-all active:scale-95;
+  background: var(--surface);
+  border-color: var(--border-light) var(--border-dark) var(--border-dark) var(--border-light);
+  color: var(--text-primary);
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: var(--text-on-accent);
+}
+
+.dark .btn {
+  @apply rounded-full border-none px-6 py-2 shadow-lg;
+  background: var(--surface);
+}
+
+.dark .btn-primary {
+  background: var(--accent);
+  @apply hover:brightness-110;
+}
+
+.badge {
+  @apply text-xs px-2 py-1 border;
+  border-color: var(--border-dark) var(--border-light) var(--border-light) var(--border-dark);
+}
+
+.dark .badge {
+  @apply rounded-lg border-none bg-zinc-800 text-text-secondary;
+}
+
+.section-title {
+  @apply text-2xl font-bold text-text-primary;
+}
+
+.section-subtitle {
+  @apply text-text-secondary mt-2 italic;
+}
+
+
+
+.anim-hidden {
+  opacity: 0;
+  transform: translateY(20px) scale(0.97);
+}
+
+.anim-visible {
+  animation: revealCard 0.4s ease forwards;
+}
+
+@keyframes revealCard {
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+:not(.dark) .anim-visible {
+  animation: xpOpen 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes xpOpen {
+  0%   { opacity: 0; transform: scale(0.92) translateY(10px); }
+  70%  { transform: scale(1.02) translateY(-2px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.dark .anim-visible {
+  animation: iosReveal 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+@keyframes iosReveal {
+  from { opacity: 0; transform: translateY(28px); filter: blur(4px); }
+  to   { opacity: 1; transform: translateY(0);    filter: blur(0); }
+}
+
+.card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+:not(.dark) .card:hover {
+  border-color: var(--accent) var(--border-dark) var(--border-dark) var(--accent) !important;
+  transform: translateY(-2px);
+}
+
+.dark .card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(10, 132, 255, 0.2);
+}

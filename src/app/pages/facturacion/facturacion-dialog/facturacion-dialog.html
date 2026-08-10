@@ -1,0 +1,230 @@
+<div class="fd-overlay" (click)="cancelar()">
+  <div class="fd-modal" (click)="$event.stopPropagation()">
+
+    <div class="fd-header">
+      <div class="fd-header-title">
+        <span>🧾</span>
+        <h3>Nueva Factura ARCA</h3>
+      </div>
+      <button class="fd-close" (click)="cancelar()">✕</button>
+    </div>
+
+    <div class="fd-body" [formGroup]="form">
+
+      <div class="fd-section">
+        <div class="fd-section-label">Cliente</div>
+
+        <div class="fd-row cliente-row">
+
+          <div class="fd-field fd-field-grow">
+            <label>Cliente *</label>
+            <div class="select-wrap">
+              <input
+                class="fd-input"
+                [formControl]="filtroClientesCtrl"
+                placeholder="Buscar cliente..."
+              />
+              <select class="fd-select" formControlName="clienteId" size="1">
+                <option [ngValue]="null" disabled>— Seleccionar —</option>
+                <option *ngFor="let c of clientesFiltrados" [ngValue]="c.id">
+                  {{ c.razonSocial }}
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <div class="fd-field">
+            <label>Condición IVA</label>
+            <div class="fd-readonly">{{ clienteSeleccionado?.condicionIVA || '—' }}</div>
+          </div>
+
+          <div class="fd-field">
+            <label>Lista de precios</label>
+            <div class="fd-readonly">{{ clienteSeleccionado?.listaPrecioNombre || '—' }}</div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="fd-section">
+        <div class="fd-section-label">Configuración ARCA</div>
+
+        <div class="fd-row">
+
+          <div class="fd-field">
+            <label>Tipo comprobante *</label>
+            <select class="fd-select" formControlName="tipoComprobanteId">
+              <option [ngValue]="null" disabled>— Seleccionar —</option>
+              <option *ngFor="let t of tiposComprobante" [ngValue]="t.id">{{ t.nombre }}</option>
+            </select>
+            <span class="fd-hint" *ngIf="clienteSeleccionado">
+              Sugerido por condición IVA
+            </span>
+          </div>
+
+          <div class="fd-field fd-field-sm">
+            <label>Punto de venta</label>
+            <input class="fd-input" type="number" formControlName="puntoVenta" />
+          </div>
+
+          <div class="fd-field">
+            <label>Concepto</label>
+            <select class="fd-select" formControlName="concepto">
+              <option [ngValue]="1">Productos</option>
+              <option [ngValue]="2">Servicios</option>
+              <option [ngValue]="3">Productos y Servicios</option>
+            </select>
+          </div>
+
+          <div class="fd-field">
+            <label>Vto. de pago *</label>
+            <input class="fd-input" type="date" formControlName="fechaVencimientoPago" />
+          </div>
+
+        </div>
+
+        <div class="fd-row" *ngIf="requiereFechasServicio">
+          <div class="fd-field">
+            <label>Período desde</label>
+            <input class="fd-input" type="date" formControlName="fechaServicioDesde" />
+          </div>
+          <div class="fd-field">
+            <label>Período hasta</label>
+            <input class="fd-input" type="date" formControlName="fechaServicioHasta" />
+          </div>
+        </div>
+
+        <div class="fd-toggle-row" *ngIf="puedeEmitirSinDiscriminar">
+          <label class="fd-toggle-label">
+            <div class="toggle-switch">
+              <input type="checkbox" formControlName="forzarNoDiscriminarIVA" />
+              <span class="toggle-slider"></span>
+            </div>
+            Emitir sin discriminar IVA
+          </label>
+          <span class="fd-hint">Emite como Factura C aunque el cliente sea RI</span>
+        </div>
+
+      </div>
+
+      <div class="fd-section">
+        <div class="fd-section-label-row">
+          <div class="fd-section-label">Ítems</div>
+          <div class="fd-items-actions">
+            <input
+              class="fd-input fd-search-items"
+              [formControl]="filtroItemsCtrl"
+              placeholder="Filtrar ítems..."
+            />
+            <button class="btn-agregar-linea" type="button" (click)="agregarLinea()">
+              + Agregar ítem <span class="shortcut">Ctrl+Espacio</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="fd-tabla-header">
+          <div class="col-item">Producto / Servicio</div>
+          <div class="col-qty">Cantidad</div>
+          <div class="col-precio">Precio <span *ngIf="!discriminaIVA">(IVA inc.)</span></div>
+          <div class="col-subtotal">Subtotal</div>
+          <div class="col-accion"></div>
+        </div>
+
+        <div
+          *ngFor="let det of detalles.controls; let i = index"
+          class="fd-linea"
+          [class.fd-linea-servicio]="det.get('esServicio')?.value"
+          [formGroup]="det">
+
+          <div class="col-item">
+            <select class="fd-select"
+              formControlName="itemId"
+              (change)="onItemChange(i)">
+              <option [ngValue]="null" disabled>— Seleccionar —</option>
+              <optgroup label="Productos">
+                <option *ngFor="let it of itemsFiltrados | filterItems:false" [ngValue]="it.id">
+                  {{ it.codigo }} — {{ it.descripcion }}
+                </option>
+              </optgroup>
+              <optgroup label="Servicios">
+                <option *ngFor="let it of itemsFiltrados | filterItems:true" [ngValue]="it.id">
+                  {{ it.codigo }} — {{ it.descripcion }}
+                </option>
+              </optgroup>
+            </select>
+            <input
+              *ngIf="det.get('esServicio')?.value"
+              class="fd-input fd-obs"
+              formControlName="observaciones"
+              placeholder="Observaciones..."
+            />
+          </div>
+
+          <div class="col-qty">
+            <input class="fd-input text-center" type="number" formControlName="cantidad" min="1" />
+          </div>
+
+          <div class="col-precio">
+            <input
+              class="fd-input"
+              type="text"
+              inputmode="decimal"
+              formControlName="precioVisual"
+              (input)="onPrecioInput(det)"
+              placeholder="0.00"
+            />
+          </div>
+
+          <div class="col-subtotal">
+            ${{ subtotalVisual(det) | number:'1.2-2' }}
+          </div>
+
+          <div class="col-accion">
+            <button class="btn-quitar" type="button" (click)="quitarLinea(i)"
+              [disabled]="detalles.length === 1">
+              ✕
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="fd-resumen">
+        <ng-container *ngIf="discriminaIVA; else totalSinDisc">
+          <div class="resumen-linea">
+            <span>Subtotal neto</span>
+            <strong>${{ subtotal | number:'1.2-2' }}</strong>
+          </div>
+          <div class="resumen-linea">
+            <span>IVA 21%</span>
+            <strong>${{ iva | number:'1.2-2' }}</strong>
+          </div>
+          <div class="resumen-total">
+            <span>TOTAL</span>
+            <strong>${{ totalFinal | number:'1.2-2' }}</strong>
+          </div>
+        </ng-container>
+        <ng-template #totalSinDisc>
+          <div class="resumen-total grande">
+            <span>Total final (IVA incluido)</span>
+            <strong>${{ totalFinal | number:'1.2-2' }}</strong>
+          </div>
+        </ng-template>
+      </div>
+
+    </div>
+
+    <div class="fd-footer">
+      <button class="btn-cancelar" (click)="cancelar()">Cancelar</button>
+      <button
+        class="btn-emitir"
+        (click)="guardar()"
+        [disabled]="form.invalid || detalles.length === 0 || guardando">
+        <span *ngIf="guardando" class="btn-spinner"></span>
+        {{ guardando ? 'Autorizando en ARCA...' : 'Emitir factura' }}
+      </button>
+    </div>
+
+  </div>
+</div>
