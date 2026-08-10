@@ -1,0 +1,236 @@
+<app-demo-header title="Gestión Gym"></app-demo-header>
+
+<div class="app-shell">
+
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="20" height="20">
+          <path d="M6 4v6M18 4v6M3 9h4M17 9h4M6 14v6M18 14v6M3 15h4M17 15h4"/>
+        </svg>
+      </div>
+      <span class="logo-text">GymPro</span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a class="nav-item active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        Panel General
+      </a>
+      <a class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Socios
+      </a>
+      <a class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        Asistencia
+      </a>
+      <a class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        Cobros
+      </a>
+      <a class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        Planes
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-avatar">AD</div>
+      <div class="user-info">
+        <span class="user-name">Admin</span>
+        <span class="user-role">Administrador</span>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main-content">
+
+    <div class="topbar">
+      <div>
+        <h1 class="page-title">Panel General</h1>
+        <p class="page-subtitle">Viernes, 13 de Marzo de 2026</p>
+      </div>
+      <div class="topbar-actions">
+        <div class="search-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          Buscar...
+        </div>
+        <button class="notify-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <span class="notify-dot"></span>
+        </button>
+      </div>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi-card kpi-primary">
+        <div class="kpi-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <div class="kpi-content">
+          <span class="kpi-label">Socios Activos</span>
+          <span class="kpi-value">{{ sociosActivos }}</span>
+          <span class="kpi-sub kpi-up">+{{ sociosNuevosEsteMes }} este mes</span>
+        </div>
+      </div>
+
+      <div class="kpi-card kpi-green">
+        <div class="kpi-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </div>
+        <div class="kpi-content">
+          <span class="kpi-label">Ingresos de Marzo</span>
+          <span class="kpi-value">{{ formatMonto(ingresosMes) }}</span>
+          <span class="kpi-sub kpi-up">↑ {{ ingresosVariacion }}% vs mes anterior</span>
+        </div>
+      </div>
+
+      <div class="kpi-card kpi-amber">
+        <div class="kpi-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <div class="kpi-content">
+          <span class="kpi-label">Asistencia Hoy</span>
+          <span class="kpi-value">{{ asistenciaHoy }}</span>
+          <span class="kpi-sub">Prom. semana: {{ asistenciaPromedioSemana }}</span>
+        </div>
+      </div>
+
+      <div class="kpi-card kpi-purple">
+        <div class="kpi-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div class="kpi-content">
+          <span class="kpi-label">Profesores</span>
+          <span class="kpi-value">{{ profesoresActivos }}</span>
+          <span class="kpi-sub">3 disciplinas activas</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="charts-row">
+
+      <div class="chart-card chart-wide">
+        <div class="chart-header">
+          <div>
+            <h3 class="chart-title">Ingresos últimos 6 meses</h3>
+            <p class="chart-subtitle">Facturación total mensual</p>
+          </div>
+          <span class="chart-badge badge-green">↑ 8.4% este mes</span>
+        </div>
+        <div class="bar-chart">
+          <div class="bar-chart-inner">
+            <div *ngFor="let m of ingresos6Meses" class="bar-col" [class.bar-col-current]="m.mes === 'Mar'">
+              <div class="bar-tooltip">{{ formatMonto(m.monto) }}</div>
+              <div class="bar-fill" [style.height.%]="barHeight(m.monto, maxIngreso)"></div>
+              <span class="bar-label">{{ m.mes }}</span>
+            </div>
+          </div>
+          <div class="bar-axis">
+            <span>{{ formatMonto(maxIngreso) }}</span>
+            <span>{{ formatMonto(maxIngreso / 2) }}</span>
+            <span>$0</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-header">
+          <div>
+            <h3 class="chart-title">Asistencia semanal</h3>
+            <p class="chart-subtitle">Por turno: mañana / tarde / noche</p>
+          </div>
+        </div>
+        <div class="asist-bars">
+          <div *ngFor="let d of asistenciaSemana" class="asist-col" [class.asist-col-today]="d.dia === 'Hoy'">
+            <div class="asist-stack" [style.height.px]="100">
+              <div class="asist-noche"  [style.flex]="d.noche"></div>
+              <div class="asist-tarde"  [style.flex]="d.tarde"></div>
+              <div class="asist-manana" [style.flex]="d.manana"></div>
+            </div>
+            <span class="asist-total">{{ d.total }}</span>
+            <span class="asist-dia">{{ d.dia }}</span>
+          </div>
+        </div>
+        <div class="asist-legend">
+          <span><i class="dot dot-manana"></i>Mañana</span>
+          <span><i class="dot dot-tarde"></i>Tarde</span>
+          <span><i class="dot dot-noche"></i>Noche</span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="bottom-row">
+
+      <div class="table-card">
+        <div class="table-header">
+          <h3 class="chart-title">Socios recientes</h3>
+          <div class="alert-pills">
+            <span class="pill pill-amber" *ngIf="sociosPorVencer > 0">{{ sociosPorVencer }} por vencer</span>
+            <span class="pill pill-red"   *ngIf="sociosVencidos > 0">{{ sociosVencidos }} vencidos</span>
+          </div>
+        </div>
+        <div class="table-scroll">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Socio</th>
+                <th>Plan</th>
+                <th>Vencimiento</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let s of sociosRecientes">
+                <td>
+                  <div class="socio-cell">
+                    <div class="avatar">{{ s.avatar }}</div>
+                    <span>{{ s.nombre }}</span>
+                  </div>
+                </td>
+                <td class="td-secondary">{{ s.plan }}</td>
+                <td class="td-secondary">{{ s.vencimiento | date:'dd/MM/yy' }}</td>
+                <td><span class="estado-badge" [ngClass]="estadoBadgeClass(s.estado)">{{ estadoLabel(s.estado) }}</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="table-card">
+        <div class="table-header">
+          <h3 class="chart-title">Cobros recientes</h3>
+          <span class="chart-badge badge-green">+6 hoy</span>
+        </div>
+        <div class="table-scroll">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Socio</th>
+                <th>Monto</th>
+                <th>Método</th>
+                <th>Fecha</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let c of cobrosRecientes">
+                <td>
+                  <div class="cobro-cell">
+                    <span>{{ c.socio }}</span>
+                    <span class="cobro-plan">{{ c.plan }}</span>
+                  </div>
+                </td>
+                <td class="td-monto">${{ c.monto.toLocaleString('es-AR') }}</td>
+                <td><span class="metodo-badge" [ngClass]="metodoBadge(c.metodo)">{{ metodoLabel(c.metodo) }}</span></td>
+                <td class="td-secondary">{{ c.fecha | date:'dd/MM' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>

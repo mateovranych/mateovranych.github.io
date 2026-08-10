@@ -1,0 +1,444 @@
+<app-demo-header title="E-Commerce"></app-demo-header>
+
+<div class="ec-shell" *ngIf="vista === 'index'">
+
+  <nav class="navbar">
+    <div class="nav-inner">
+      <div class="nav-logo" (click)="irIndex()">
+        <span class="logo-e">E</span><span class="logo-rest">commercePro</span>
+      </div>
+      <div class="nav-search">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" placeholder="Buscar productos..." [(ngModel)]="filtroBusqueda">
+      </div>
+      <div class="nav-actions">
+        <button class="btn-admin-link" (click)="irAdmin()">Panel Admin</button>
+        <button class="btn-cart" [class.cart-has-items]="carritoCount > 0">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          <span class="cart-count" *ngIf="carritoCount > 0">{{ carritoCount }}</span>
+        </button>
+      </div>
+    </div>
+    <div class="nav-cats">
+      <div class="nav-inner">
+        <button *ngFor="let cat of categorias" class="nav-cat-btn"
+          [class.active]="filtroCategoria === cat"
+          (click)="filtroCategoria = cat; filtroBusqueda = ''">
+          {{ cat }}
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="detalle-overlay" *ngIf="productoDetalle" (click)="cerrarDetalle()">
+    <div class="detalle-card" (click)="$event.stopPropagation()">
+      <button class="detalle-close" (click)="cerrarDetalle()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      <div class="detalle-img" [style.background]="productoDetalle.imagen"></div>
+      <div class="detalle-info">
+        <span class="detalle-cat">{{ productoDetalle.categoria }} · {{ productoDetalle.genero }}</span>
+        <h2 class="detalle-nombre">{{ productoDetalle.nombre }}</h2>
+        <p class="detalle-desc">{{ productoDetalle.descripcion }}</p>
+        <div class="detalle-precios">
+          <span class="detalle-precio-actual">{{ formatPrecio(productoDetalle.precioOferta ?? productoDetalle.precio) }}</span>
+          <span class="detalle-precio-orig" *ngIf="productoDetalle.precioOferta">{{ formatPrecio(productoDetalle.precio) }}</span>
+          <span class="descuento-pill" *ngIf="productoDetalle.precioOferta">-{{ descuento(productoDetalle) }}%</span>
+        </div>
+        <div class="detalle-tags">
+          <span class="tag-destacado" *ngIf="productoDetalle.destacado">★ Destacado</span>
+          <span class="tag-oferta" *ngIf="productoDetalle.oferta">🔥 Oferta</span>
+          <span class="tag-stock">{{ productoDetalle.stock }} en stock</span>
+        </div>
+        <button class="btn-comprar" (click)="agregarCarrito(productoDetalle)">
+          Agregar al carrito
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-text">
+        <p class="hero-label">Nueva colección Otoño–Invierno</p>
+        <h1 class="hero-title">Define<br>tu estilo<span class="hero-dot">.</span></h1>
+        <p class="hero-sub">Prendas seleccionadas para quienes no siguen tendencias, las crean.</p>
+        <button class="btn-hero" (click)="filtroCategoria = 'Todas'; filtroBusqueda = ''">
+          Ver colección completa
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-card hc-1"><div class="hc-img" style="background:#2d2d2d"></div><span>Jean Slim Fit</span></div>
+        <div class="hero-card hc-2"><div class="hc-img" style="background:#c8b8a2"></div><span>Oversize Premium</span></div>
+        <div class="hero-card hc-3"><div class="hc-img" style="background:#1a1a1a"></div><span>Blazer Structured</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-destacados" *ngIf="productosDestacados.length > 0">
+    <div class="sec-inner">
+      <div class="sec-header">
+        <h2 class="sec-title">Destacados</h2>
+        <span class="sec-line"></span>
+      </div>
+      <div class="dest-scroll">
+        <div class="dest-card" *ngFor="let p of productosDestacados" (click)="verDetalle(p)">
+          <div class="dest-img" [style.background]="p.imagen">
+            <span class="dest-oferta-badge" *ngIf="p.oferta">-{{ descuento(p) }}%</span>
+          </div>
+          <div class="dest-info">
+            <span class="dest-cat">{{ p.categoria }}</span>
+            <p class="dest-nombre">{{ p.nombre }}</p>
+            <div class="dest-precio">
+              <span class="precio-actual">{{ formatPrecio(p.precioOferta ?? p.precio) }}</span>
+              <span class="precio-orig" *ngIf="p.precioOferta">{{ formatPrecio(p.precio) }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="banner-ofertas" *ngIf="productosOferta.length > 0">
+    <div class="sec-inner">
+      <div class="banner-inner">
+        <div class="banner-texto">
+          <span class="banner-label">Solo por tiempo limitado</span>
+          <h2 class="banner-title">Hasta 35% OFF<br>en prendas seleccionadas</h2>
+          <p class="banner-sub">{{ productosOferta.length }} productos en oferta ahora mismo.</p>
+        </div>
+        <div class="oferta-pills">
+          <div class="oferta-pill" *ngFor="let p of productosOfertaTop" (click)="verDetalle(p)">
+            <div class="oferta-pill-img" [style.background]="p.imagen"></div>
+            <div>
+              <p class="oferta-pill-nombre">{{ p.nombre }}</p>
+              <div class="oferta-pill-precios">
+                <span class="op-actual">{{ formatPrecio(p.precioOferta!) }}</span>
+                <span class="op-orig">{{ formatPrecio(p.precio) }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-grid">
+    <div class="sec-inner">
+      <div class="grid-header">
+        <div class="sec-header">
+          <h2 class="sec-title">Catálogo</h2>
+          <span class="sec-line"></span>
+        </div>
+        <div class="grid-controls">
+          <select class="ctrl-select" [(ngModel)]="filtroGenero">
+            <option *ngFor="let g of generos" [value]="g">{{ g }}</option>
+          </select>
+          <div class="view-toggle">
+            <button [class.active]="vistaGrid === 'grid'" (click)="vistaGrid = 'grid'">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+            </button>
+            <button [class.active]="vistaGrid === 'list'" (click)="vistaGrid = 'list'">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+            </button>
+          </div>
+          <span class="result-count">{{ productosFiltrados.length }} productos</span>
+        </div>
+      </div>
+
+      <div class="empty-state" *ngIf="productosFiltrados.length === 0">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <p>No encontramos productos para "{{ filtroBusqueda }}"</p>
+        <button class="btn-ghost" (click)="filtroBusqueda = ''; filtroCategoria = 'Todas'">Limpiar filtros</button>
+      </div>
+
+      <div class="productos-grid" *ngIf="vistaGrid === 'grid'">
+        <div class="prod-card" *ngFor="let p of productosFiltrados" (click)="verDetalle(p)">
+          <div class="prod-img" [style.background]="p.imagen">
+            <span class="prod-badge-oferta" *ngIf="p.oferta">-{{ descuento(p) }}%</span>
+            <span class="prod-badge-dest" *ngIf="p.destacado && !p.oferta">★</span>
+            <button class="prod-quick-add" (click)="agregarCarrito(p); $event.stopPropagation()">
+              + Agregar
+            </button>
+          </div>
+          <div class="prod-info">
+            <span class="prod-cat">{{ p.categoria }} · {{ p.genero }}</span>
+            <p class="prod-nombre">{{ p.nombre }}</p>
+            <div class="prod-precios">
+              <span class="prod-precio-actual">{{ formatPrecio(p.precioOferta ?? p.precio) }}</span>
+              <span class="prod-precio-orig" *ngIf="p.precioOferta">{{ formatPrecio(p.precio) }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="productos-list" *ngIf="vistaGrid === 'list'">
+        <div class="prod-row" *ngFor="let p of productosFiltrados" (click)="verDetalle(p)">
+          <div class="prod-row-img" [style.background]="p.imagen"></div>
+          <div class="prod-row-info">
+            <span class="prod-cat">{{ p.categoria }} · {{ p.genero }}</span>
+            <p class="prod-nombre">{{ p.nombre }}</p>
+            <p class="prod-desc-short">{{ p.descripcion }}</p>
+          </div>
+          <div class="prod-row-right">
+            <div class="prod-precios">
+              <span class="prod-precio-actual">{{ formatPrecio(p.precioOferta ?? p.precio) }}</span>
+              <span class="prod-precio-orig" *ngIf="p.precioOferta">{{ formatPrecio(p.precio) }}</span>
+            </div>
+            <div class="prod-row-tags">
+              <span class="tag-dest-sm" *ngIf="p.destacado">★ Dest.</span>
+              <span class="tag-ofe-sm" *ngIf="p.oferta">🔥 Oferta</span>
+            </div>
+            <button class="btn-add-row" (click)="agregarCarrito(p); $event.stopPropagation()">Agregar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <span class="logo-e">E</span><span class="logo-rest">commercePro</span>
+        <p>Moda argentina con identidad propia.</p>
+      </div>
+      <div class="footer-cols">
+        <div class="footer-col">
+          <h4>Tienda</h4>
+          <a>Novedades</a><a>Ofertas</a><a>Destacados</a>
+        </div>
+        <div class="footer-col">
+          <h4>Ayuda</h4>
+          <a>Preguntas frecuentes</a><a>Cambios y devoluciones</a><a>Envíos</a>
+        </div>
+        <div class="footer-col">
+          <h4>Contacto</h4>
+          <a>info&#64;ecommercepro.ar</a><a>WhatsApp</a><a>Instagram</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 EcommercePro · Todos los derechos reservados</p>
+    </div>
+  </footer>
+
+</div>
+
+<div class="admin-shell" *ngIf="vista === 'admin'">
+
+  <div class="admin-login" *ngIf="!adminAutenticado">
+    <div class="login-card">
+      <div class="login-logo">
+        <span class="logo-e">E</span><span class="logo-rest">Pro</span>
+        <span class="login-label">Admin</span>
+      </div>
+      <h2>Iniciar sesión</h2>
+      <p class="login-hint">Usuario: <strong>admin</strong> · Contraseña: <strong>1234</strong></p>
+      <div class="form-group">
+        <label>Usuario</label>
+        <input type="text" [(ngModel)]="adminUser" placeholder="admin" (keyup.enter)="loginAdmin()">
+      </div>
+      <div class="form-group">
+        <label>Contraseña</label>
+        <input type="password" [(ngModel)]="adminPass" placeholder="••••" (keyup.enter)="loginAdmin()">
+      </div>
+      <p class="login-error" *ngIf="adminLoginError">Usuario o contraseña incorrectos</p>
+      <button class="btn-login" (click)="loginAdmin()">Ingresar</button>
+      <button class="btn-back-login" (click)="irIndex()">← Volver a la tienda</button>
+    </div>
+  </div>
+
+  <div class="admin-panel" *ngIf="adminAutenticado">
+
+    <div class="admin-topbar">
+      <div class="admin-topbar-left">
+        <button class="admin-back" (click)="irIndex()">← Tienda</button>
+        <span class="admin-title">Panel de Administración</span>
+      </div>
+      <div class="admin-topbar-right">
+        <span class="admin-user">Admin</span>
+        <button class="btn-logout" (click)="cerrarSesion()">Cerrar sesión</button>
+      </div>
+    </div>
+
+    <div class="admin-stats">
+      <div class="stat-card">
+        <span class="stat-val">{{ productos.length }}</span>
+        <span class="stat-label">Productos</span>
+      </div>
+      <div class="stat-card stat-dest">
+        <span class="stat-val">{{ productosDestacados.length }}</span>
+        <span class="stat-label">Destacados</span>
+      </div>
+      <div class="stat-card stat-oferta">
+        <span class="stat-val">{{ productosOferta.length }}</span>
+        <span class="stat-label">En oferta</span>
+      </div>
+      <div class="stat-card stat-stock">
+        <span class="stat-val">{{ totalStock }}</span>
+        <span class="stat-label">Unidades en stock</span>
+      </div>
+    </div>
+
+    <div class="admin-toolbar">
+      <div class="admin-search-box">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" placeholder="Buscar producto..." [(ngModel)]="busquedaAdmin">
+      </div>
+      <button class="btn-nuevo" (click)="abrirModalNuevo()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Nuevo producto
+      </button>
+    </div>
+
+    <div class="admin-table-wrap">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Producto</th>
+            <th>Categoría</th>
+            <th>Precio</th>
+            <th>Stock</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let p of productosFiltradosAdmin">
+            <td>
+              <div class="admin-prod-cell">
+                <div class="admin-prod-thumb" [style.background]="p.imagen"></div>
+                <span class="admin-prod-nombre">{{ p.nombre }}</span>
+              </div>
+            </td>
+            <td class="td-sec">{{ p.categoria }} · {{ p.genero }}</td>
+            <td>
+              <div class="admin-precios">
+                <span class="admin-precio-main">{{ formatPrecio(p.precioOferta ?? p.precio) }}</span>
+                <span class="admin-precio-orig" *ngIf="p.precioOferta">{{ formatPrecio(p.precio) }}</span>
+              </div>
+            </td>
+            <td>
+              <span class="stock-badge" [class.stock-low]="p.stock <= 5">{{ p.stock }}</span>
+            </td>
+            <td>
+              <div class="estado-toggles">
+                <button class="toggle-btn" [class.toggle-on-dest]="p.destacado" (click)="toggleDestacado(p)">
+                  ★ {{ p.destacado ? 'Dest.' : 'Dest.' }}
+                </button>
+                <button class="toggle-btn" [class.toggle-on-ofe]="p.oferta" (click)="toggleOferta(p)">
+                  🔥 {{ p.oferta ? 'Oferta' : 'Oferta' }}
+                </button>
+              </div>
+            </td>
+            <td>
+              <div class="admin-acciones" *ngIf="confirmandoEliminar !== p.id">
+                <button class="btn-edit" (click)="abrirModalEditar(p)">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                </button>
+                <button class="btn-del" (click)="confirmarEliminar(p.id)">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                </button>
+              </div>
+              <div class="confirm-del" *ngIf="confirmandoEliminar === p.id">
+                <span>¿Eliminar?</span>
+                <button class="btn-confirm-yes" (click)="eliminarProducto(p.id)">Sí</button>
+                <button class="btn-confirm-no" (click)="cancelarEliminar()">No</button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="empty-admin" *ngIf="productosFiltradosAdmin.length === 0">
+        <p>No hay productos que coincidan con la búsqueda.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="modal-overlay" *ngIf="modalProductoAbierto" (click)="cerrarModal()">
+  <div class="modal-card" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>{{ productoEditando ? 'Editar producto' : 'Nuevo producto' }}</h3>
+      <button class="modal-close" (click)="cerrarModal()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Nombre *</label>
+          <input type="text" [(ngModel)]="nuevoProducto.nombre" placeholder="Nombre del producto">
+        </div>
+      </div>
+      <div class="form-row two-col">
+        <div class="form-group">
+          <label>Categoría</label>
+          <select [(ngModel)]="nuevoProducto.categoria">
+            <option>Remeras</option><option>Pantalones</option><option>Vestidos</option>
+            <option>Camperas</option><option>Buzos</option><option>Tops</option>
+            <option>Faldas</option><option>Blazers</option><option>Shorts</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Género</label>
+          <select [(ngModel)]="nuevoProducto.genero">
+            <option>Unisex</option><option>Mujer</option><option>Hombre</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row two-col">
+        <div class="form-group">
+          <label>Precio ($)</label>
+          <input type="number" [(ngModel)]="nuevoProducto.precio" min="0">
+        </div>
+        <div class="form-group">
+          <label>Precio oferta (opcional)</label>
+          <input type="number" [(ngModel)]="nuevoProducto.precioOferta" min="0" placeholder="Dejar vacío si no aplica">
+        </div>
+      </div>
+      <div class="form-row two-col">
+        <div class="form-group">
+          <label>Stock</label>
+          <input type="number" [(ngModel)]="nuevoProducto.stock" min="0">
+        </div>
+        <div class="form-group">
+          <label>Color imagen</label>
+          <div class="color-pick">
+            <input type="color" [(ngModel)]="nuevoProducto.imagen">
+            <div class="color-preview" [style.background]="nuevoProducto.imagen"></div>
+            <span>{{ nuevoProducto.imagen }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Descripción</label>
+        <textarea [(ngModel)]="nuevoProducto.descripcion" rows="2" placeholder="Descripción breve del producto"></textarea>
+      </div>
+      <div class="form-row two-col">
+        <div class="form-check">
+          <input type="checkbox" id="ck-dest" [(ngModel)]="nuevoProducto.destacado">
+          <label for="ck-dest">★ Producto destacado</label>
+        </div>
+        <div class="form-check">
+          <input type="checkbox" id="ck-ofe" [(ngModel)]="nuevoProducto.oferta">
+          <label for="ck-ofe">🔥 En oferta</label>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-modal-cancel" (click)="cerrarModal()">Cancelar</button>
+      <button class="btn-modal-save" (click)="guardarProducto()" [disabled]="guardandoProducto">
+        <span *ngIf="!guardandoProducto">{{ productoEditando ? 'Guardar cambios' : 'Crear producto' }}</span>
+        <span *ngIf="guardandoProducto">Guardando...</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" [class.toast-visible]="toastVisible">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+  {{ toastMsg }}
+</div>
