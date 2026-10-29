@@ -18,8 +18,8 @@ import { LanguageService } from '../../services/language.service';
     </a>
 
     <nav class="hidden md:flex items-center gap-6 text-sm text-text-secondary">
-      <a class="hover:text-text-primary transition-colors" href="#projects">{{ data().ui.nav.projects }}</a>
       <a class="hover:text-text-primary transition-colors" href="#experience">{{ data().ui.nav.experience }}</a>
+      <a class="hover:text-text-primary transition-colors" href="#projects">{{ data().ui.nav.projects }}</a>
       <a class="hover:text-text-primary transition-colors" href="#skills">{{ data().ui.nav.skills }}</a>
       <a class="hover:text-text-primary transition-colors" href="#contact">{{ data().ui.nav.contact }}</a>
     </nav>
@@ -66,10 +66,10 @@ import { LanguageService } from '../../services/language.service';
       text-text-primary hover:opacity-80" href="#home">{{ data().ui.nav.home }}</a>
 
       <a (click)="toggleMenu()" class="text-3xl font-medium tracking-tight
-      text-text-primary hover:opacity-80" href="#projects">{{ data().ui.nav.projects }}</a>
+      text-text-primary hover:opacity-80" href="#experience">{{ data().ui.nav.experience }}</a>
 
       <a (click)="toggleMenu()" class="text-3xl font-medium tracking-tight
-      text-text-primary hover:opacity-80" href="#experience">{{ data().ui.nav.experience }}</a>
+      text-text-primary hover:opacity-80" href="#projects">{{ data().ui.nav.projects }}</a>
 
       <a (click)="toggleMenu()" class="text-3xl font-medium tracking-tight
       text-text-primary hover:opacity-80" href="#skills">{{ data().ui.nav.skills }}</a>
