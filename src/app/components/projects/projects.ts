@@ -26,12 +26,9 @@ import { LanguageService } from '../../services/language.service';
       class="card p-6 anim-hidden"
       [style.--i]="i">
 
-      <div class="flex items-start justify-between gap-3">
-        <h4 class="text-lg font-semibold text-text-primary">
-          {{ p.title }}
-        </h4>
-        <span *ngIf="p.production !== false" class="prod-badge">{{ data().ui.projects.inProduction }}</span>
-      </div>
+      <h4 class="text-lg font-semibold text-text-primary">
+        {{ p.title }}
+      </h4>
 
       <p class="mt-2 text-text-secondary">
         {{ p.description }}
@@ -58,7 +55,6 @@ import { LanguageService } from '../../services/language.service';
           <h4 class="text-xl font-semibold text-text-primary">
             {{ selected.title }}
           </h4>
-          <span *ngIf="selected.production !== false" class="prod-badge mt-2">{{ data().ui.projects.inProduction }}</span>
           <p class="mt-2 text-text-secondary">
             {{ selected.summary || selected.description }}
           </p>
@@ -141,32 +137,6 @@ import { LanguageService } from '../../services/language.service';
   </div>
   `,
   styles: [`
-    .prod-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      white-space: nowrap;
-      flex-shrink: 0;
-      font-size: 11px;
-      font-weight: 600;
-      line-height: 1;
-      padding: 4px 10px;
-      border-radius: 999px;
-      color: #16a34a;
-      background: rgba(34, 197, 94, 0.12);
-      border: 1px solid rgba(34, 197, 94, 0.35);
-    }
-    .prod-badge::before {
-      content: "";
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: #22c55e;
-    }
-    :host-context(.dark) .prod-badge {
-      color: #4ade80;
-    }
-
     .anim-hidden {
       opacity: 0;
       transform: translateY(24px) scale(0.97);
