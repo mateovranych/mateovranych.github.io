@@ -10,6 +10,7 @@ export interface Project {
   challenges?: string[];
   stack: string[];
   links: Link[];
+  production?: boolean;
 }
 
 export interface Experience {
@@ -29,7 +30,7 @@ export interface SkillGroup {
 export interface UILabels {
   nav: { projects: string; experience: string; skills: string; contact: string; cta: string; downloadCv: string; home: string; mobileCta: string };
   hero: { viewProjects: string; contact: string };
-  projects: { title: string; subtitle: string; view: string; whatIDid: string; challenges: string; viewDemo: string };
+  projects: { title: string; subtitle: string; view: string; whatIDid: string; challenges: string; viewDemo: string; inProduction: string };
   experience: { title: string; subtitle: string };
   skills: { title: string; subtitle: string };
   contact: { title: string; subtitle: string; name: string; namePlaceholder: string; message: string; messagePlaceholder: string; sendEmail: string; sendWhatsapp: string; whatsappTemplate: string };

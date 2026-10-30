@@ -49,7 +49,7 @@ export const PORTFOLIO_ES: PortfolioData = {
   ui: {
     nav: { projects: "Proyectos", experience: "Experiencia", skills: "Habilidades", contact: "Contacto", cta: "Contactame", downloadCv: "Descargar CV", home: "Inicio", mobileCta: "Hagamos un proyecto" },
     hero: { viewProjects: "Ver proyectos", contact: "Contacto" },
-    projects: { title: "Proyectos", subtitle: "Sistemas en producción · .NET, Angular y arquitectura escalable.", view: "Ver", whatIDid: "Qué hice", challenges: "Retos / decisiones", viewDemo: "Ver demo" },
+    projects: { title: "Proyectos", subtitle: "Sistemas en producción · se pueden revisar en vivo con autorización del dueño.", view: "Ver", whatIDid: "Qué hice", challenges: "Retos / decisiones", viewDemo: "Ver demo", inProduction: "En producción" },
     experience: { title: "Experiencia", subtitle: "Desarrollo full-stack, arquitectura y docencia." },
     skills: { title: "Habilidades", subtitle: "Stack principal." },
     contact: { title: "Contacto", subtitle: "Contame qué necesitás y te respondo por WhatsApp.", name: "Nombre", namePlaceholder: "Tu nombre", message: "Mensaje", messagePlaceholder: "¿Qué sistema o aplicación necesitás?", sendEmail: "Enviar por Email", sendWhatsapp: "Enviar por WhatsApp", whatsappTemplate: "Hola Mateo! Mi nombre es {name}. {message}. Vengo desde tu portfolio." },
@@ -169,6 +169,7 @@ export const PORTFOLIO_ES: PortfolioData = {
       ],
       stack: [".NET", "Angular", "AWS", "Docker", "MercadoPago"],
       links: [],
+      production: false,
     },
     {
       title: "Idade de Ouro · Automatizaciones",
@@ -271,7 +272,7 @@ export const PORTFOLIO_EN: PortfolioData = {
   ui: {
     nav: { projects: "Projects", experience: "Experience", skills: "Skills", contact: "Contact", cta: "Get in touch", downloadCv: "Download CV", home: "Home", mobileCta: "Let's build something" },
     hero: { viewProjects: "View projects", contact: "Contact" },
-    projects: { title: "Projects", subtitle: "Production systems · .NET, Angular, and scalable architecture.", view: "View", whatIDid: "What I did", challenges: "Challenges / decisions", viewDemo: "View demo" },
+    projects: { title: "Projects", subtitle: "Production systems · available for a live review with the owner's authorization.", view: "View", whatIDid: "What I did", challenges: "Challenges / decisions", viewDemo: "View demo", inProduction: "In production" },
     experience: { title: "Experience", subtitle: "Full-stack development, architecture, and teaching." },
     skills: { title: "Skills", subtitle: "Core stack." },
     contact: { title: "Contact", subtitle: "Tell me what you need and I'll get back to you.", name: "Name", namePlaceholder: "Your name", message: "Message", messagePlaceholder: "What system or app do you need?", sendEmail: "Send Email", sendWhatsapp: "Send via WhatsApp", whatsappTemplate: "Hi Mateo! My name is {name}. {message}. I found you through your portfolio." },
@@ -391,6 +392,7 @@ export const PORTFOLIO_EN: PortfolioData = {
       ],
       stack: [".NET", "Angular", "AWS", "Docker", "MercadoPago"],
       links: [],
+      production: false,
     },
     {
       title: "Idade de Ouro · Automations",
