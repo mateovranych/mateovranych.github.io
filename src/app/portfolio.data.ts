@@ -46,6 +46,17 @@ const SHARED_IMAGES = {
     "assets/projects/agendapeluqueria/clientes.png",
     "assets/projects/agendapeluqueria/productos.png",
   ],
+  idade: [
+    "assets/projects/idade/1.png",
+  ],
+  sistemapanaderia: [
+    "assets/projects/sistemapanaderia/1.png",
+    "assets/projects/sistemapanaderia/2.png",
+    "assets/projects/sistemapanaderia/3.png",
+    "assets/projects/sistemapanaderia/4.png",
+    "assets/projects/sistemapanaderia/5.png",
+    "assets/projects/sistemapanaderia/6.png",
+  ],
 };
 
 export const PORTFOLIO_ES: PortfolioData = {
@@ -183,7 +194,7 @@ export const PORTFOLIO_ES: PortfolioData = {
     {
       title: "Idade de Ouro · Automatizaciones",
       description: "Automatización de procesos para Idade de Ouro, un servicio de Prevención de Riesgos Laborales (PRL) en España: escaneo de correos de Gmail, distribución de personal con Odoo y un dashboard interactivo de seguimiento.",
-      images: [],
+      images: SHARED_IMAGES.idade,
       summary: "Flujos que leen y clasifican correos de Gmail, automatizan la distribución de personal en Odoo y exponen todo en un dashboard interactivo en tiempo real.",
       highlights: [
         "Escaneo y clasificación automática de correos de Gmail",
@@ -201,7 +212,7 @@ export const PORTFOLIO_ES: PortfolioData = {
     {
       title: "Sistema Panadería · POS con Balanza",
       description: "Punto de venta para panadería con integración de balanza Systel Cuora Max: lectura de etiquetas de pesaje, productos a granel por kg, caja, stock e impresión de tickets. Angular + ASP.NET Core sobre PostgreSQL.",
-      images: [],
+      images: SHARED_IMAGES.sistemapanaderia,
       summary: "Decodifica las etiquetas EAN-13 de la balanza Systel Cuora Max para cargar productos a granel (peso × precio/kg) directo a la venta. Caja ágil por teclado, tickets ESC/POS y gráficos en tiempo real.",
       highlights: [
         "Integración con balanza Systel Cuora Max: decodificación de EAN-13 de pesaje (PLU + gramos) para agregar productos a granel a la venta",
@@ -406,7 +417,7 @@ export const PORTFOLIO_EN: PortfolioData = {
     {
       title: "Idade de Ouro · Automations",
       description: "Process automation for Idade de Ouro, an occupational risk prevention (PRL) company in Spain: Gmail inbox scanning, staff distribution with Odoo, and an interactive monitoring dashboard.",
-      images: [],
+      images: SHARED_IMAGES.idade,
       summary: "Workflows that read and classify Gmail emails, automate staff distribution in Odoo, and surface everything in a real-time interactive dashboard.",
       highlights: [
         "Automatic scanning and classification of Gmail emails",
@@ -424,7 +435,7 @@ export const PORTFOLIO_EN: PortfolioData = {
     {
       title: "Bakery POS · Scale Integration",
       description: "Point of sale for a bakery with Systel Cuora Max scale integration: weighing-label scanning, bulk products by kg, cash register, inventory, and ticket printing. Angular + ASP.NET Core on PostgreSQL.",
-      images: [],
+      images: SHARED_IMAGES.sistemapanaderia,
       summary: "Decodes the Systel Cuora Max scale's EAN-13 labels to add bulk products (weight × price/kg) straight to the sale. Keyboard-driven cash register, ESC/POS tickets, and real-time charts.",
       highlights: [
         "Systel Cuora Max scale integration: EAN-13 weighing-label decoding (PLU + grams) to add bulk products to the sale",
