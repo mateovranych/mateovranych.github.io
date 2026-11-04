@@ -15,9 +15,12 @@ const SHARED_IMAGES = {
     "assets/projects/azavnia/4.png",
   ],
   scdental: [
-    "assets/projects/scdental/scdentallogo.jpg",
-    "assets/projects/scdental/cal.jpg",
-    "assets/projects/scdental/obras.jpg",
+    "assets/projects/scdental/hero.png",
+    "assets/projects/scdental/cal.png",
+    "assets/projects/scdental/pacientes.png",
+    "assets/projects/scdental/turno.jpg",
+    "assets/projects/scdental/whatsapp.png",
+    "assets/projects/scdental/obras-sociales.jpg",
   ],
   bassino: [
     "assets/projects/bassino/bassinologo.jpg",
@@ -35,6 +38,13 @@ const SHARED_IMAGES = {
   ],
   ecommerce: [
     "assets/projects/ecommerce/1.png",
+  ],
+  agendapeluqueria: [
+    "assets/projects/agendapeluqueria/agenda-cobro-rapido.png",
+    "assets/projects/agendapeluqueria/agenda-cobrar-turno.png",
+    "assets/projects/agendapeluqueria/caja.png",
+    "assets/projects/agendapeluqueria/clientes.png",
+    "assets/projects/agendapeluqueria/productos.png",
   ],
 };
 
@@ -98,7 +108,7 @@ export const PORTFOLIO_ES: PortfolioData = {
     {
       title: "Agenda Peluquería · SaaS de Turnos",
       description: "Plataforma SaaS multi-tenant de gestión de turnos para peluquerías y negocios por cita, con agenda, clientes, pagos y recordatorios. Angular + ASP.NET Core sobre PostgreSQL. En producción.",
-      images: [],
+      images: SHARED_IMAGES.agendapeluqueria,
       summary: "Agenda con calendario interactivo (FullCalendar), gestión de clientes y pagos, y recordatorios automáticos por WhatsApp. Multi-tenant con planes por cliente.",
       highlights: [
         "Agenda de turnos con calendario interactivo (FullCalendar) y tipos de servicio",
@@ -235,6 +245,7 @@ export const PORTFOLIO_ES: PortfolioData = {
         "Seguridad de aplicaciones web: autenticación con JWT y BCrypt, autorización por roles, interceptors, guards, middleware y CORS.",
         "Patrones aplicados de producción: paginación y filtrado server-side, manejo global de errores, programación asíncrona y componentes standalone.",
         "Elaboración de material propio (apuntes técnicos y evaluaciones) que conecta cada concepto de backend con su equivalente en frontend.",
+        "Dirección técnica y mentoría del proyecto de tesis: organicé al equipo (~20 alumnos) por áreas (frontend, backend, QA y diseño), definí la arquitectura y el alcance, y orienté el desarrollo. Implementé personalmente módulos clave como la integración con ARCA (facturación electrónica) y el módulo de calendario.",
       ],
       stack: ["ASP.NET Core", "Angular", "EF Core", "JWT", "Seguridad Web"],
     },
@@ -320,7 +331,7 @@ export const PORTFOLIO_EN: PortfolioData = {
     {
       title: "Agenda Peluquería · SaaS Scheduling",
       description: "Multi-tenant SaaS scheduling platform for salons and appointment-based businesses, with calendar, clients, payments, and reminders. Angular + ASP.NET Core on PostgreSQL. In production.",
-      images: [],
+      images: SHARED_IMAGES.agendapeluqueria,
       summary: "Scheduling with an interactive calendar (FullCalendar), client and payment management, and automatic WhatsApp reminders. Multi-tenant with per-client plans.",
       highlights: [
         "Appointment scheduling with an interactive calendar (FullCalendar) and service types",
@@ -457,6 +468,7 @@ export const PORTFOLIO_EN: PortfolioData = {
         "Web application security: authentication with JWT and BCrypt, role-based authorization, interceptors, guards, middleware, and CORS.",
         "Production-grade patterns: server-side pagination and filtering, global error handling, asynchronous programming, and standalone components.",
         "Authoring my own material (technical notes and assessments) connecting each backend concept with its frontend equivalent.",
+        "Technical direction and mentorship of the thesis project: I organized the team (~20 students) by area (frontend, backend, QA, and design), defined the architecture and scope, and guided development. I personally implemented key modules such as the ARCA (electronic invoicing) integration and the calendar module.",
       ],
       stack: ["ASP.NET Core", "Angular", "EF Core", "JWT", "Web Security"],
     },
