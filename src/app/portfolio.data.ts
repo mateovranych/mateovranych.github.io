@@ -1,4 +1,19 @@
-import { PortfolioData } from "./models/Portfolio.modes";
+import { Apunte, PortfolioData } from "./models/Portfolio.modes";
+
+const APUNTES_REPO = "https://github.com/mateovranych/APUNTES";
+
+const APUNTES: Apunte[] = [
+  { title: "APIs REST con .NET", topic: "Construir una API de cero: HTTP, REST, JWT y EF Core.", stack: [".NET", "C#", "EF Core"], pdf: "assets/apuntes/apis.pdf" },
+  { title: "Angular + Autenticación", topic: "Login en el frontend: AuthService, interceptors y guards.", stack: ["Angular", "JWT"], pdf: "assets/apuntes/angular-auth.pdf" },
+  { title: "Autorización por Roles", topic: "Autenticación vs autorización: anatomía del JWT y claims.", stack: ["Angular", ".NET", "JWT"], pdf: "assets/apuntes/angular-roles.pdf" },
+  { title: "Paginación y Filtrado", topic: "Partir y filtrar listados grandes con Skip/Take y debounce.", stack: [".NET", "Angular", "LINQ"], pdf: "assets/apuntes/paginacion-filtrado.pdf" },
+  { title: "Testing y TDD", topic: "Pirámide de pruebas, AAA, xUnit, Moq y ciclo Red-Green-Refactor.", stack: ["xUnit", "Moq", "TDD"], pdf: "assets/apuntes/testing.pdf" },
+  { title: "Code Smells y Refactoring", topic: "Las cinco familias de smells y cómo refactorizar seguro.", stack: ["Refactoring", "Clean Code"], pdf: "assets/apuntes/code-smells.pdf" },
+  { title: "Clean Architecture", topic: "Organizar el proyecto en capas y la regla de dependencia.", stack: ["Arquitectura", ".NET"], pdf: "assets/apuntes/clean-architecture.pdf" },
+  { title: "UML y Modelado", topic: "Diagramas de clases, casos de uso, secuencia y estados.", stack: ["UML", "Modelado"], pdf: "assets/apuntes/uml.pdf" },
+  { title: "Ingeniería de Software", topic: "Panorama de la materia: SDLC, SOLID, patrones y ágiles.", stack: ["SDLC", "SOLID", "Patrones"], pdf: "assets/apuntes/ingenieria-software.pdf" },
+  { title: "Redes y Ciberseguridad", topic: "Modelo OSI, TCP/UDP, DNS y fundamentos de seguridad ofensiva.", stack: ["Redes", "Seguridad"], pdf: "assets/apuntes/redes-ciberseguridad.pdf" },
+];
 
 const SHARED_LINKS = [
   { label: "GitHub", href: "https://github.com/mateovranych" },
@@ -68,11 +83,12 @@ export const PORTFOLIO_ES: PortfolioData = {
   links: SHARED_LINKS,
 
   ui: {
-    nav: { projects: "Proyectos", experience: "Experiencia", skills: "Habilidades", contact: "Contacto", cta: "Contactame", downloadCv: "Descargar CV", home: "Inicio", mobileCta: "Hagamos un proyecto" },
+    nav: { projects: "Proyectos", experience: "Experiencia", skills: "Habilidades", apuntes: "Apuntes", contact: "Contacto", cta: "Contactame", downloadCv: "Descargar CV", home: "Inicio", mobileCta: "Hagamos un proyecto" },
     hero: { viewProjects: "Ver proyectos", contact: "Contacto" },
     projects: { title: "Proyectos", subtitle: "Sistemas en producción · se pueden revisar en vivo con autorización del dueño.", view: "Ver", whatIDid: "Qué hice", challenges: "Retos / decisiones", viewDemo: "Ver demo" },
     experience: { title: "Experiencia", subtitle: "Desarrollo full-stack, arquitectura y docencia." },
     skills: { title: "Habilidades", subtitle: "Stack principal." },
+    apuntes: { title: "Apuntes", subtitle: "Material docente que escribo para mis clases en el ITS · teoría + código real, libres para estudiar.", viewAll: "Ver todos en GitHub", open: "Abrir PDF" },
     contact: { title: "Contacto", subtitle: "Contame qué necesitás y te respondo por WhatsApp.", name: "Nombre", namePlaceholder: "Tu nombre", message: "Mensaje", messagePlaceholder: "¿Qué sistema o aplicación necesitás?", sendEmail: "Enviar por Email", sendWhatsapp: "Enviar por WhatsApp", whatsappTemplate: "Hola Mateo! Mi nombre es {name}. {message}. Vengo desde tu portfolio." },
     cvPath: "assets/cv/cv.pdf",
   },
@@ -280,6 +296,8 @@ export const PORTFOLIO_ES: PortfolioData = {
     { title: "Integraciones & POS", items: ["Posnet Clover", "Cloud Pay Display", "Tenders (QR)", "MercadoPago API"] },
     { title: "IA & Automatización", items: ["OpenAI API", "Anthropic Claude", "n8n", "LLM Integration", "Prompt Engineering"] },
   ],
+
+  apuntes: APUNTES,
 };
 
 export const PORTFOLIO_EN: PortfolioData = {
@@ -291,11 +309,12 @@ export const PORTFOLIO_EN: PortfolioData = {
   links: SHARED_LINKS,
 
   ui: {
-    nav: { projects: "Projects", experience: "Experience", skills: "Skills", contact: "Contact", cta: "Get in touch", downloadCv: "Download CV", home: "Home", mobileCta: "Let's build something" },
+    nav: { projects: "Projects", experience: "Experience", skills: "Skills", apuntes: "Notes", contact: "Contact", cta: "Get in touch", downloadCv: "Download CV", home: "Home", mobileCta: "Let's build something" },
     hero: { viewProjects: "View projects", contact: "Contact" },
     projects: { title: "Projects", subtitle: "Production systems · available for a live review with the owner's authorization.", view: "View", whatIDid: "What I did", challenges: "Challenges / decisions", viewDemo: "View demo" },
     experience: { title: "Experience", subtitle: "Full-stack development, architecture, and teaching." },
     skills: { title: "Skills", subtitle: "Core stack." },
+    apuntes: { title: "Study Notes", subtitle: "Teaching material I write for my classes at ITS · theory + real code, free to study (in Spanish).", viewAll: "View all on GitHub", open: "Open PDF" },
     contact: { title: "Contact", subtitle: "Tell me what you need and I'll get back to you.", name: "Name", namePlaceholder: "Your name", message: "Message", messagePlaceholder: "What system or app do you need?", sendEmail: "Send Email", sendWhatsapp: "Send via WhatsApp", whatsappTemplate: "Hi Mateo! My name is {name}. {message}. I found you through your portfolio." },
     cvPath: "assets/cv/cv-en.pdf",
   },
@@ -503,6 +522,8 @@ export const PORTFOLIO_EN: PortfolioData = {
     { title: "Integrations & POS", items: ["Clover POS", "Cloud Pay Display", "Custom Tenders (QR)", "MercadoPago API"] },
     { title: "AI & Automation", items: ["OpenAI API", "Anthropic Claude", "n8n", "LLM Integration", "Prompt Engineering"] },
   ],
+
+  apuntes: APUNTES,
 };
 
 export const PORTFOLIO = PORTFOLIO_ES;

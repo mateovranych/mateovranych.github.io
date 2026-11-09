@@ -26,12 +26,20 @@ export interface SkillGroup {
   items: string[];
 }
 
+export interface Apunte {
+  title: string;
+  topic: string;
+  stack: string[];
+  pdf: string;
+}
+
 export interface UILabels {
-  nav: { projects: string; experience: string; skills: string; contact: string; cta: string; downloadCv: string; home: string; mobileCta: string };
+  nav: { projects: string; experience: string; skills: string; apuntes: string; contact: string; cta: string; downloadCv: string; home: string; mobileCta: string };
   hero: { viewProjects: string; contact: string };
   projects: { title: string; subtitle: string; view: string; whatIDid: string; challenges: string; viewDemo: string };
   experience: { title: string; subtitle: string };
   skills: { title: string; subtitle: string };
+  apuntes: { title: string; subtitle: string; viewAll: string; open: string };
   contact: { title: string; subtitle: string; name: string; namePlaceholder: string; message: string; messagePlaceholder: string; sendEmail: string; sendWhatsapp: string; whatsappTemplate: string };
   cvPath: string;
 }
@@ -45,5 +53,6 @@ export interface PortfolioData {
   projects: Project[];
   experience: Experience[];
   skills: SkillGroup[];
+  apuntes: Apunte[];
   ui: UILabels;
 }

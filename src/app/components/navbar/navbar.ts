@@ -21,6 +21,7 @@ import { LanguageService } from '../../services/language.service';
       <a class="hover:text-text-primary transition-colors" href="#experience">{{ data().ui.nav.experience }}</a>
       <a class="hover:text-text-primary transition-colors" href="#projects">{{ data().ui.nav.projects }}</a>
       <a class="hover:text-text-primary transition-colors" href="#skills">{{ data().ui.nav.skills }}</a>
+      <a class="hover:text-text-primary transition-colors" href="#apuntes">{{ data().ui.nav.apuntes }}</a>
       <a class="hover:text-text-primary transition-colors" href="#contact">{{ data().ui.nav.contact }}</a>
     </nav>
 
@@ -73,6 +74,9 @@ import { LanguageService } from '../../services/language.service';
 
       <a (click)="toggleMenu()" class="text-3xl font-medium tracking-tight
       text-text-primary hover:opacity-80" href="#skills">{{ data().ui.nav.skills }}</a>
+
+      <a (click)="toggleMenu()" class="text-3xl font-medium tracking-tight
+      text-text-primary hover:opacity-80" href="#apuntes">{{ data().ui.nav.apuntes }}</a>
 
       <a (click)="toggleMenu()" class="text-3xl font-medium tracking-tight
       text-text-primary hover:opacity-80" href="#contact">{{ data().ui.nav.contact }}</a>

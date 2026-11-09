@@ -5,6 +5,7 @@ import { Hero } from '../../components/hero/hero';
 import { Projects } from '../../components/projects/projects';
 import { Experience } from '../../components/experience/experience';
 import { Skills } from '../../components/skills/skills';
+import { Apuntes } from '../../components/apuntes/apuntes';
 import { Contact } from '../../components/contact/contact';
 
 @Component({
@@ -15,6 +16,7 @@ import { Contact } from '../../components/contact/contact';
     Projects,
     Experience,
     Skills,
+    Apuntes,
     Contact,
   ],
   templateUrl: './home.html',
